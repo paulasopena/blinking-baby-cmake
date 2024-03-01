@@ -19,7 +19,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "string.h"
-
+#include "FreeRTOS.h"
+#include "task.h"
+#include "cmsis_os.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -68,7 +70,9 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
 
-/* USER CODE END PV */
+TaskHandle_t firstBabyHandle; 
+//TaskHandle_t secondBabyHandle; 
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -76,6 +80,11 @@ static void MX_GPIO_Init(void);
 static void MX_ETH_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
+void BlinkingBabyTask(void *argument);
+//void TransmitBabyTask(void *argument);
+uint8_t rxbuff[10];
+
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -118,18 +127,24 @@ int main(void)
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
 
-  /* USER CODE END 2 */
+  xTaskCreate(BlinkingBabyTask, "BABY 1", 50, NULL, 1, &firstBabyHandle);
 
+  /* Start scheduler */
+  
+  //xTaskCreate(TransmitBabyTask, "BABY 1", 50, NULL, 1, &secondBabyHandle);
+
+  /* Start scheduler */
+  vTaskStartScheduler();
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-    HAL_Delay(500);
+    
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+  return 0;
 }
 
 /**
@@ -191,6 +206,24 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
+
+
+void BlinkingBabyTask (void *argument){
+ 
+  for(;;){
+    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    osDelay(1000);
+  }
+
+}
+/*
+void TransmitBabyTask (void *argument){
+  for(;;){
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+    osDelay(1000);
+  }
+}
+*/
 
 /**
   * @brief ETH Initialization Function

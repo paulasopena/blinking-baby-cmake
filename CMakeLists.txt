@@ -37,6 +37,12 @@ set(CUBEMX_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include
 )
 
+set(FREERTOS_INCLUDE_DIRECTORIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
+)
+
 set(PROJECT_INCLUDE_DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_DIR})
@@ -48,9 +54,12 @@ file(GLOB_RECURSE STM32CUBEMX_SOURCES
 file(GLOB_RECURSE PROJECT_SOURCES FOLLOW_SYMLINKS
     ${PROJECT_DIR}/*.c)
 
+file(GLOB_RECURSE FREERTOS_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/*.c)
 # Executable files
 add_executable(${EXECUTABLE}
-    ${STM32CUBEMX_SOURCES} 
+    ${STM32CUBEMX_SOURCES}
+    ${FREERTOS_SOURCES} 
     ${PROJECT_SOURCES}
     ${STARTUP_SCRIPT})
 
@@ -62,6 +71,7 @@ target_compile_definitions(${EXECUTABLE} PRIVATE
 # Add header directories (AFTER add_executable !!)
 target_include_directories(${EXECUTABLE} PRIVATE
     ${CUBEMX_INCLUDE_DIRECTORIES}
+    ${FREERTOS_INCLUDE_DIRECTORIES}
     ${PROJECT_INCLUDE_DIRECTORIES})
 
 target_compile_options(${EXECUTABLE} PRIVATE
