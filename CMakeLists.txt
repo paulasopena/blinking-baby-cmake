@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/toolchain.cmake)
 
 project(blinking-baby C ASM)
+
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Src)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) 
 
 set(MAIN_SOURCE_FILE main.c)
 
